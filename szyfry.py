@@ -18,7 +18,7 @@ def deZKluczem(kod, klucz):
     for i in klucz.lower():
         tab.append(alfabet.index(i))
     for i in kod.lower():
-        deszyfr+=alfabet[alfabet.index(i)-1 - tab[tmp]]
+        deszyfr+=alfabet[alfabet.index(i) - tab[tmp] -1] #index zaczyna sie od 0 wiec trzeba odjac jedynke
         tmp = tmp+1
     return deszyfr
         
