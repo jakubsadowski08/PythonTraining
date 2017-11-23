@@ -1,4 +1,3 @@
-
 import pygame
 import random
 from config import Config
@@ -205,7 +204,7 @@ def main(gameDisplay):
             )
         else:
             apple(Config.apple_x, Config.apple_y, gameDisplay, appleIMG)
-        if round >= 50 and speed_boost == False:
+        if round >= 50 and speed_boost is False:
             banana(Config.banana_x, Config.banana_y, gameDisplay,
                    bananaIMG)
             if checking(Config.head_x, Config.head_y, Config.banana_x,
