@@ -6,6 +6,8 @@ def snake(x,y,body_x,body_y,gameDisplay,snakeIMG,bodyIMG):
         gameDisplay.blit(bodyIMG, (body_x[i],body_y[i]))
 def apple(x,y,gameDisplay,appleIMG):
     gameDisplay.blit(appleIMG, (x,y))
+def banana(x,y,gameDisplay,bananaIMG):
+    gameDisplay.blit(bananaIMG, (x,y))
 def checking(x,y,apple_x,apple_y):
     if x == apple_x and y == apple_y:
         return True
@@ -46,6 +48,7 @@ def events(direction, directions):
                 direction = directions["Up"] 
             elif event.key == pygame.K_DOWN and direction != directions["Up"]:
                 direction = directions["Down"]
+
     return direction
 
 def moving_snake(body_x, body_y, direction, directions, head_x, head_y):
@@ -66,31 +69,62 @@ def moving_snake(body_x, body_y, direction, directions, head_x, head_y):
     elif direction == directions["Down"]:
         head_y=head_y+20
     return head_x, head_y
-
-def main(head_x,head_y,apple_x,apple_y,white,display_width,display_height,body_x,body_y,direction,directions):
+def main(head_x,head_y,apple_x,apple_y,white,display_width,display_height,body_x,body_y,direction,directions,banana_x,banana_y,boost_lenght):
     pygame.init()
     gameDisplay = pygame.display.set_mode((display_width,display_height))
     pygame.display.set_caption('Snake')
     clock = pygame.time.Clock()
     pygame.mixer.music.load('bg.wav')
-    pygame.mixer.music.play(-1, 0.0)       
+    pygame.mixer.music.play(-1, 0.0)   
+
+    wynik = 0
+
+    czcionka = pygame.font.SysFont("dejavusans", 20)
+    text = "Wynik: " + str(wynik)
+    text_render = czcionka.render(text, 1, (0, 0, 0))
+
     snakeIMG = pygame.image.load('snake.png')
     appleIMG = pygame.image.load('apple.png')
     bodyIMG = pygame.image.load('body.png')
-    while not end_of_game(head_x,head_y,body_x,body_y,Config.display_width,Config.display_height):
+    bananaIMG = pygame.image.load('banana.png')
+
+    round = 1
+
+
+    speed_boost = False
+    number_of_boosted_rounds = 0
+    while not end_of_game(head_x,head_y,body_x,body_y,display_width,display_height):
         direction = events(direction, directions)
         head_x, head_y = moving_snake(body_x, body_y, direction, directions, head_x, head_y)
         gameDisplay.fill(white)
+        gameDisplay.blit(text_render, (10,10))
         if  checking(head_x,head_y,apple_x,apple_y):
-            apple_x =20 * random.randint(0,39)
-            apple_y =20 * random.randint(0,29)
+            apple_x =20 * random.randint(0,(display_width - 20) / 20)
+            apple_y =20 * random.randint(0,(display_height - 20) / 20)
             apple(apple_x,apple_y,gameDisplay,appleIMG)
             size_increasing(head_x,head_y,direction,directions,body_x,body_y)
         else:
             apple(apple_x,apple_y,gameDisplay,appleIMG)
+        if round >= 50 and speed_boost == False:
+                banana(banana_x,banana_y,gameDisplay,bananaIMG)
+                if checking(head_x,head_y,banana_x,banana_y):
+                    round = 1
+                    speed_boost = True
         snake(head_x,head_y,body_x,body_y,gameDisplay,snakeIMG,bodyIMG)
         pygame.display.update()
-        clock.tick(20)
+        if speed_boost:
+            if number_of_boosted_rounds < boost_lenght:
+                number_of_boosted_rounds = number_of_boosted_rounds +1
+                clock.tick(30)
+            else:
+                wynik = wynik + len(body_x)
+                text = "Wynik: " + str(wynik)
+                text_render = czcionka.render(text, 1, (0, 0, 0))
+                number_of_boosted_rounds = 1
+                speed_boost = False
+        else:
+            clock.tick(20)
+        round = round + 1
     pygame.quit()
     quit()
-main(Config.head_x,Config.head_y,Config.apple_x,Config.apple_y,Config.white,Config.display_width,Config.display_height,Config.body_x,Config.body_y,Config.direction,Config.directions)
+main(Config.head_x,Config.head_y,Config.apple_x,Config.apple_y,Config.white,Config.display_width,Config.display_height,Config.body_x,Config.body_y,Config.direction,Config.directions,Config.banana_x,Config.banana_y,Config.boost_lenght)
