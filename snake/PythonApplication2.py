@@ -262,7 +262,7 @@ def intro(started):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 (x, y) = pygame.mouse.get_pos()
                 if x > Config.start_x and x < Config.start_x + 200 \
-                        and y > Config.start_y and y < Config.start_y + 80:  # ten obrazek ma rozdzielczosc 200 x 80
+                        and y > Config.start_y and y < Config.start_y + 80:
                     main(screen)
                 elif x > Config.stop_x and x < Config.start_x + 189 \
                         and y > Config.stop_y and y < Config.stop_y + 80:
@@ -271,4 +271,3 @@ def intro(started):
 
 
 intro(False)
-
