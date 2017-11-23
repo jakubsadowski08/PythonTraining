@@ -2,6 +2,7 @@ class Config:
     display_width = 800
     display_height = 600
     white = (255,255,255)
+    black = (0,0,0)
     apple_x = display_width * 0.7
     apple_y = display_height * 0.2
     banana_x = display_width * 0.5
@@ -14,3 +15,7 @@ class Config:
     direction =directions["Right"]
     speed = 1
     boost_lenght = 150
+    start_x = 300
+    start_y = 100
+    stop_x = 300
+    stop_y = 300
