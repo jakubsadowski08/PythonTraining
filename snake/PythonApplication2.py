@@ -38,7 +38,8 @@ def size_increasing(x,y,direction,directions,body_x,body_y):
 def events(direction, directions):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            end = True
+            pygame.quit()
+            quit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT and direction != directions["Right"]:
                 direction = directions["Left"]
@@ -69,13 +70,20 @@ def moving_snake(body_x, body_y, direction, directions, head_x, head_y):
     elif direction == directions["Down"]:
         head_y=head_y+20
     return head_x, head_y
-def main(head_x,head_y,apple_x,apple_y,white,display_width,display_height,body_x,body_y,direction,directions,banana_x,banana_y,boost_lenght):
-    pygame.init()
-    gameDisplay = pygame.display.set_mode((display_width,display_height))
-    pygame.display.set_caption('Snake')
-    clock = pygame.time.Clock()
+def default_values(head_x,head_y):
+    return Config.display_width * 0.5 , Config.display_height * 0.5
+
+def cleanse_lists():
+    Config.body_x = []
+    Config.body_y = []
+
+def main(gameDisplay):
+    pygame.display.set_caption('snake')
+
     pygame.mixer.music.load('bg.wav')
     pygame.mixer.music.play(-1, 0.0)   
+
+    clock = pygame.time.Clock()
 
     wynik = 0
 
@@ -93,31 +101,31 @@ def main(head_x,head_y,apple_x,apple_y,white,display_width,display_height,body_x
 
     speed_boost = False
     number_of_boosted_rounds = 0
-    while not end_of_game(head_x,head_y,body_x,body_y,display_width,display_height):
-        direction = events(direction, directions)
-        head_x, head_y = moving_snake(body_x, body_y, direction, directions, head_x, head_y)
-        gameDisplay.fill(white)
+    while not end_of_game(Config.head_x,Config.head_y,Config.body_x,Config.body_y,Config.display_width,Config.display_height):
+        Config.direction = events(Config.direction, Config.directions)
+        Config.head_x, Config.head_y = moving_snake(Config.body_x, Config.body_y, Config.direction, Config.directions, Config.head_x, Config.head_y)
+        gameDisplay.fill(Config.white)
         gameDisplay.blit(text_render, (10,10))
-        if  checking(head_x,head_y,apple_x,apple_y):
-            apple_x =20 * random.randint(0,(display_width - 20) / 20)
-            apple_y =20 * random.randint(0,(display_height - 20) / 20)
-            apple(apple_x,apple_y,gameDisplay,appleIMG)
-            size_increasing(head_x,head_y,direction,directions,body_x,body_y)
+        if  checking(Config.head_x,Config.head_y,Config.apple_x,Config.apple_y):
+            Config.apple_x =20 * random.randint(0,(Config.display_width - 20) / 20)
+            Config.apple_y =20 * random.randint(0,(Config.display_height - 20) / 20)
+            apple(Config.apple_x,Config.apple_y,gameDisplay,appleIMG)
+            size_increasing(Config.head_x,Config.head_y,Config.direction,Config.directions,Config.body_x,Config.body_y)
         else:
-            apple(apple_x,apple_y,gameDisplay,appleIMG)
+            apple(Config.apple_x,Config.apple_y,gameDisplay,appleIMG)
         if round >= 50 and speed_boost == False:
-                banana(banana_x,banana_y,gameDisplay,bananaIMG)
-                if checking(head_x,head_y,banana_x,banana_y):
+                banana(Config.banana_x,Config.banana_y,gameDisplay,bananaIMG)
+                if checking(Config.head_x,Config.head_y,Config.banana_x,Config.banana_y):
                     round = 1
                     speed_boost = True
-        snake(head_x,head_y,body_x,body_y,gameDisplay,snakeIMG,bodyIMG)
+        snake(Config.head_x,Config.head_y,Config.body_x,Config.body_y,gameDisplay,snakeIMG,bodyIMG)
         pygame.display.update()
         if speed_boost:
-            if number_of_boosted_rounds < boost_lenght:
+            if number_of_boosted_rounds < Config.boost_lenght:
                 number_of_boosted_rounds = number_of_boosted_rounds +1
                 clock.tick(30)
             else:
-                wynik = wynik + len(body_x)
+                wynik = wynik + len(Config.body_x)
                 text = "Wynik: " + str(wynik)
                 text_render = czcionka.render(text, 1, (0, 0, 0))
                 number_of_boosted_rounds = 1
@@ -125,6 +133,33 @@ def main(head_x,head_y,apple_x,apple_y,white,display_width,display_height,body_x
         else:
             clock.tick(20)
         round = round + 1
-    pygame.quit()
-    quit()
-main(Config.head_x,Config.head_y,Config.apple_x,Config.apple_y,Config.white,Config.display_width,Config.display_height,Config.body_x,Config.body_y,Config.direction,Config.directions,Config.banana_x,Config.banana_y,Config.boost_lenght)
+    pygame.mixer.music.stop()
+    Config.head_x,Config.head_y = default_values(Config.head_x,Config.head_y)
+    cleanse_lists()
+    intro(True)
+def intro(started):
+    if not started:
+        pygame.init()
+    screen = pygame.display.set_mode( (Config.display_width, Config.display_height ) )
+    pygame.display.set_caption('Intro')
+    startIMG = pygame.image.load("start.png").convert()
+    stopIMG = pygame.image.load("stop.png").convert()
+ 
+
+    screen.blit(startIMG ,  ( Config.start_x,Config.start_y))
+    screen.blit(stopIMG ,  ( Config.stop_x,Config.stop_y))
+    pygame.display.flip()
+ 
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = pygame.mouse.get_pos()
+                if x > Config.start_x and x < Config.start_x + 200 and y > Config.start_y and y <Config.start_y + 80: #ten obrazek ma rozdzielczosc 200 x 80
+                    main(screen)
+                elif x > Config.stop_x and x < Config.start_x + 189 and y > Config.stop_y and y <Config.stop_y + 80: 
+                    pygame.quit()
+                    quit()
+intro(False)
