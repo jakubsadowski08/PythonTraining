@@ -149,7 +149,7 @@ def main(gameDisplay):
     pygame.display.set_caption('snake')
 
     pygame.mixer.music.load('bg.wav')
-    #pygame.mixer.music.play(-1, 0.0)
+    pygame.mixer.music.play(-1, 0.0)
 
     clock = pygame.time.Clock()
 
