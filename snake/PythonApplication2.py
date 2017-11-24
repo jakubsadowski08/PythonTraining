@@ -149,7 +149,7 @@ def main(gameDisplay):
     pygame.display.set_caption('snake')
 
     pygame.mixer.music.load('bg.wav')
-    pygame.mixer.music.play(-1, 0.0)
+    #pygame.mixer.music.play(-1, 0.0)
 
     clock = pygame.time.Clock()
 
@@ -238,14 +238,17 @@ def main(gameDisplay):
     (Config.head_x, Config.head_y) = default_values(Config.head_x,
                                                     Config.head_y)
     cleanse_lists()
-    intro(True)
+    gameDisplay.fill(Config.black)
+    intro(True,gameDisplay)
 
 
-def intro(started):
+
+def intro(started,screen = pygame.display.set_mode((Config.display_width,
+                                       Config.display_height))):
     if not started:
         pygame.init()
-    screen = pygame.display.set_mode((Config.display_width,
-                                      Config.display_height))
+        screen = pygame.display.set_mode((Config.display_width,
+                                       Config.display_height))
     pygame.display.set_caption('Intro')
     startIMG = pygame.image.load('start.png').convert()
     stopIMG = pygame.image.load('stop.png').convert()
