@@ -247,8 +247,6 @@ def intro(started,screen = pygame.display.set_mode((Config.display_width,
                                        Config.display_height))):
     if not started:
         pygame.init()
-        screen = pygame.display.set_mode((Config.display_width,
-                                       Config.display_height))
     pygame.display.set_caption('Intro')
     startIMG = pygame.image.load('start.png').convert()
     stopIMG = pygame.image.load('stop.png').convert()
