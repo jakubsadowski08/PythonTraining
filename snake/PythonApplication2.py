@@ -1,5 +1,6 @@
 import pygame
 import random
+import linecache
 from config import Config
 
 
@@ -56,7 +57,6 @@ def end_of_game(
         display_height,
 ):
     if x >= display_width or x < 0 or y >= display_height or y < 0:
-        print(x, y)
         return True
     else:
         for i in range(len(body_x)):
@@ -153,11 +153,11 @@ def main(gameDisplay):
 
     clock = pygame.time.Clock()
 
-    wynik = 0
+    score = 0
 
-    czcionka = pygame.font.SysFont('dejavusans', 20)
-    text = 'Wynik: ' + str(wynik)
-    text_render = czcionka.render(text, 1, (0, 0, 0))
+    font = pygame.font.SysFont('dejavusans', 20)
+    text = 'Score: ' + str(score)
+    text_render = font.render(text, 1, (0, 0, 0))
 
     snakeIMG = pygame.image.load('snake.png')
     appleIMG = pygame.image.load('apple.png')
@@ -227,9 +227,9 @@ def main(gameDisplay):
                 number_of_boosted_rounds = number_of_boosted_rounds + 1
                 clock.tick(30)
             else:
-                wynik = wynik + len(Config.body_x)
-                text = 'Wynik: ' + str(wynik)
-                text_render = czcionka.render(text, 1, (0, 0, 0))
+                score = score + len(Config.body_x)
+                text = 'Score: ' + str(score)
+                text_render = font.render(text, 1, (0, 0, 0))
                 number_of_boosted_rounds = 1
                 speed_boost = False
         else:
@@ -240,12 +240,42 @@ def main(gameDisplay):
                                                     Config.head_y)
     cleanse_lists()
     gameDisplay.fill(Config.black)
-    intro(True,gameDisplay)
+    gameover(gameDisplay,score)
 
 
+def gameover(screen,score):
+    linecache.clearcache()
+    best_score = linecache.getline('best_score.txt', 1)
+    if int(best_score) < score:
+        file = open('best_score.txt', 'w')
+        file.write(str(score))
+        best_score = str(score) + '\n'
+        file.close()
+    pygame.display.set_caption('Game Over')
 
-def intro(started,screen = pygame.display.set_mode((Config.display_width,
-                                       Config.display_height))):
+    font = pygame.font.SysFont('dejavusans', 40)
+    text = 'Your score: ' + str(score)
+    text_render = font.render(text, 1, (255, 255, 255))
+    screen.blit(text_render, (280, 250))
+
+    text = 'Best score: ' + best_score
+    text_render = font.render(text[:-1], 1, (255, 255, 255))
+    screen.blit(text_render, (280, 350))
+
+    pygame.display.flip()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                screen.fill(Config.black)
+                intro(True, screen)
+
+
+def intro(started, screen=pygame.display.set_mode((Config.display_width,
+                                                   Config.display_height))):
     if not started:
         pygame.init()
     pygame.display.set_caption('Intro')
