@@ -163,6 +163,7 @@ def main(gameDisplay):
     appleIMG = pygame.image.load('apple.png')
     bodyIMG = pygame.image.load('body.png')
     bananaIMG = pygame.image.load('banana.png')
+    bgIMG = pygame.image.load('background.png')
 
     round = 1
 
@@ -185,7 +186,7 @@ def main(gameDisplay):
             Config.head_x,
             Config.head_y,
         )
-        gameDisplay.fill(Config.white)
+        gameDisplay.blit(bgIMG, (0, 0))
         gameDisplay.blit(text_render, (10, 10))
         if checking(Config.head_x, Config.head_y, Config.apple_x,
                     Config.apple_y):
