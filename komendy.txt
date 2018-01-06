@@ -1,4 +1,0 @@
-git pull
-git checkout nazwa_brancha
-git checkout master
-git merge branch
