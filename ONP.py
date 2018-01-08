@@ -22,17 +22,15 @@ class Stack:
             self.stack[x] = self.stack[x] / self.stack[x + 1]
             self.pop()
 def ONP(ciag, operatory,sztos):
-    for i in ciag:
+    for i in ciag.split(" "):
         if i in operatory:
             sztos.zlacz(i)
-        elif i ==" ":
-            continue
         else:
             sztos.push(int(i))
+    return sztos.stack[0]
 operatory = ['+', '-', '*', '/']
 sztos = Stack()
-ONP("2 2 + 5 *",operatory,sztos)
-print(sztos.stack)
+print(ONP("22 5 +",operatory,sztos))
 
 
 
